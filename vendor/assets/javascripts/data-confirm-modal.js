@@ -139,6 +139,8 @@
                         '<div class="modal-confirm col-xs-10"></div>' +
                         '<div class="clearfix"></div>' +
                       '</div>'
+    } else {
+      modalBodyHtml = '<div class="modal-confirm"></div>'
     }
     
     var modal = $(
@@ -151,7 +153,7 @@
             '</div>' +
             '<div class="modal-body">' +
               modalBodyHtml +
-            '</div>'+
+            '</div>' +
             '<div class="modal-footer">' +
               '<button class="btn cancel" data-dismiss="modal" aria-hidden="true"></button>' +
               '<button class="btn commit"></button>' +
