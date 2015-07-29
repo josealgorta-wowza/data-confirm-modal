@@ -22,6 +22,8 @@
    *  * `data-focus`:   Define focused input. Supported values are
    *                    'cancel' or 'commit', 'cancel' is default for
    *                    data-method DELETE, 'commit' for all others.
+   *  * `data-iconclass`: The 'icon' next to the confirm text.
+   *  * `data-iconcolor`: The color of the 'icon' next to the confirm text.
    *
    * You can set global setting using `dataConfirmModal.setDefaults`, for example:
    *
@@ -45,6 +47,9 @@
     verifyClass: '',
     elements: ['a[data-confirm]', 'button[data-confirm]', 'input[type=submit][data-confirm]'],
     focus: 'commit',
+    icon: false,
+    iconClass: 'fa-exclamation-triangle',
+    iconColor: '#000',
     zIndex: 1050,
     modalClass: false
   };
@@ -93,6 +98,9 @@
       title:        element.attr('title') || element.data('original-title'),
       text:         element.data('confirm'),
       focus:        element.data('focus'),
+      icon:         element.data('icon'),
+      iconClass:    element.data('icon-class'),
+      iconColor:    element.data('icon-color'),
       method:       element.data('method'),
       commit:       element.data('commit'),
       commitClass:  element.data('commit-class'),
@@ -121,7 +129,18 @@
     var id = 'confirm-modal-' + String(Math.random()).slice(2, -1);
     var fade = settings.fade ? 'fade' : '';
     var modalClass = settings.modalClass ? settings.modalClass : '';
-
+    
+    var modalBodyHtml = '';
+    if(settings.icon) {
+      modalBodyHtml = '<div class="row">' +
+                        '<div class="modal-icon col-xs-2">' +
+                          '<i class="fa fa-4x"></i>' +
+                        '</div>'+
+                        '<div class="modal-confirm col-xs-10"></div>' +
+                        '<div class="clearfix"></div>' +
+                      '</div>'
+    }
+    
     var modal = $(
       '<div id="'+id+'" class="modal '+fade+' '+modalClass+'" tabindex="-1" role="dialog" aria-labelledby="'+id+'Label" aria-hidden="true">' +
         '<div class="modal-dialog">' +
@@ -130,7 +149,9 @@
               '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
               '<h4 id="'+id+'Label" class="modal-title"></h4> ' +
             '</div>' +
-            '<div class="modal-body"></div>' +
+            '<div class="modal-body">' +
+              modalBodyHtml +
+            '</div>'+
             '<div class="modal-footer">' +
               '<button class="btn cancel" data-dismiss="modal" aria-hidden="true"></button>' +
               '<button class="btn commit"></button>' +
@@ -153,10 +174,18 @@
     modal.find('.modal-title').text(options.title || settings.title);
 
     var body = modal.find('.modal-body');
-
+    
+    // add the confirm text
     $.each((options.text||'').split(/\n{2}/), function (i, piece) {
-      body.append($('<p/>').html(piece));
+      //body.append($('<p/>').html(piece));
+      modal.find('.modal-confirm').append($('<p/>').html(piece));
     });
+
+    // add the fontawesome icon
+    if(settings.icon) {
+      modal.find('.modal-icon i.fa').addClass(options.iconClass || settings.iconClass);
+      modal.find('.modal-icon i.fa').css('color', (options.iconColor || settings.iconColor));
+    }
 
     var commit = modal.find('.commit');
     commit.text(options.commit || settings.commit);
