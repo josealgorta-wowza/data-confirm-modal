@@ -23,7 +23,9 @@
    *                    'cancel' or 'commit', 'cancel' is default for
    *                    data-method DELETE, 'commit' for all others.
    *  * `data-iconclass`: The 'icon' next to the confirm text.
+   *                      Default is 'fa-exclamation-triangle'.
    *  * `data-iconcolor`: The color of the 'icon' next to the confirm text.
+   *                      Default is '#000'.
    *
    * You can set global setting using `dataConfirmModal.setDefaults`, for example:
    *
