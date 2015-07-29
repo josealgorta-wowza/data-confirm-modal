@@ -131,7 +131,7 @@
     var modalClass = settings.modalClass ? settings.modalClass : '';
     
     var modalBodyHtml = '';
-    if(settings.icon) {
+    if(options.icon) {
       modalBodyHtml = '<div class="row">' +
                         '<div class="modal-icon col-xs-2">' +
                           '<i class="fa fa-4x"></i>' +
@@ -184,7 +184,7 @@
     });
 
     // add the fontawesome icon
-    if(settings.icon) {
+    if(options.icon) {
       modal.find('.modal-icon i.fa').addClass(options.iconClass || settings.iconClass);
       modal.find('.modal-icon i.fa').css('color', (options.iconColor || settings.iconColor));
     }
