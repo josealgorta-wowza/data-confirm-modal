@@ -135,10 +135,10 @@
     var modalBodyHtml = '';
     if(options.icon) {
       modalBodyHtml = '<div class="row">' +
-                        '<div class="modal-icon col-xs-2">' +
+                        '<div class="modal-icon col-sm-2 col-xs-3">' +
                           '<i class="fa fa-4x"></i>' +
                         '</div>'+
-                        '<div class="modal-confirm col-xs-10"></div>' +
+                        '<div class="modal-confirm col-sm-10 col-xs-9"></div>' +
                         '<div class="clearfix"></div>' +
                       '</div>'
     } else {
