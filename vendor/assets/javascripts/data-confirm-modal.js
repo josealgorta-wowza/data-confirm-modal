@@ -186,7 +186,7 @@
     
     var dialogClass = options.dialogClass ? options.dialogClass : settings.dialogClass;
     var modalCloseContent = options.modalCloseContent ? options.modalCloseContent : settings.modalCloseContent;
-    var modalClose = '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">'+modalCloseContent+'</button>'
+    var modalClose = '<button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">'+modalCloseContent+'</button>'
 
     var modalTitle = '<h5 id="'+id+'Label" class="modal-title"></h5> '
     var modalHeader;
@@ -221,7 +221,7 @@
               modalBodyHtml +
             '</div>' +
             '<div class="modal-footer">' +
-              '<button class="btn cancel" data-dismiss="modal" aria-hidden="true"></button>' +
+              '<button class="btn cancel" data-bs-dismiss="modal" aria-hidden="true"></button>' +
               '<button class="btn commit"></button>' +
             '</div>'+
           '</div>'+
