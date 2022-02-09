@@ -46,14 +46,17 @@
     cancel: 'Cancel',
     cancelClass: 'btn-default',
     fade: true,
-    verifyClass: '',
+    verifyClass: 'form-control',
     elements: ['a[data-confirm]', 'button[data-confirm]', 'input[type=submit][data-confirm]'],
     focus: 'commit',
     icon: false,
     iconClass: 'fa-exclamation-triangle',
     iconColor: '#000',
     zIndex: 1050,
-    modalClass: false
+    modalClass: '',
+    dialogClass: '',
+    modalCloseContent: '&times;',
+    show: true
   };
 
   var settings;
@@ -70,9 +73,9 @@
     confirm: function (options) {
       // Build an ephemeral modal
       //
-      var modal = buildModal (options);
+      var modal = buildModal(options);
 
-      modal.modal('show');
+      modal.spawn();
       modal.on('hidden.bs.modal', function () {
         modal.remove();
       });
@@ -90,20 +93,53 @@
 
         modal.modal('hide');
       });
+
+      modal.on('hidden.bs.modal', function () {
+        if (options.onHide && options.onHide.call)
+          options.onHide.call();
+      });
     }
   };
 
   dataConfirmModal.restoreDefaults();
 
+  // Detect bootstrap version, or bail out.
+  //
+  if ($.fn.modal == undefined) {
+    throw new Error("The bootstrap modal plugin does not appear to be loaded.");
+  }
+
+  if ($.fn.modal.Constructor == undefined) {
+    throw new Error("The bootstrap modal plugin does not have a Constructor ?!?");
+  }
+
+  if ($.fn.modal.Constructor.VERSION == undefined) {
+    throw new Error("The bootstrap modal plugin does not have its version defined ?!?");
+  }
+
+  var versionString = $.fn.modal.Constructor.VERSION;
+  var match = versionString.match(/^(\d)\./);
+  if (!match) {
+    throw new Error("Cannot identify Bootstrap version. Version string: " + versionString);
+  }
+
+  var bootstrapVersion = parseInt(match[1]);
+  if (bootstrapVersion != 3 && bootstrapVersion != 4) {
+    throw new Error("Unsupported bootstrap version: " + bootstrapVersion + ". data-confirm-modal supports version 3 and 4.");
+  }
+
   var buildElementModal = function (element) {
     var options = {
-      title:        element.attr('title') || element.data('original-title'),
+      title:        element.data('title') || element.attr('title') || element.data('original-title'),
       text:         element.data('confirm'),
       focus:        element.data('focus'),
       icon:         element.data('icon'),
       iconClass:    element.data('icon-class'),
       iconColor:    element.data('icon-color'),
       method:       element.data('method'),
+      modalClass:        element.data('modal-class'),
+      dialogClass:       element.data('dialog-class'),
+      modalCloseContent: element.data('modal-close-content'),
       commit:       element.data('commit'),
       commitClass:  element.data('commit-class'),
       cancel:       element.data('cancel'),
@@ -112,15 +148,18 @@
       verify:       element.data('verify'),
       verifyRegexp: element.data('verify-regexp'),
       verifyLabel:  element.data('verify-text'),
-      verifyRegexpCaseInsensitive: element.data('verify-regexp-caseinsensitive')
+      verifyRegexpCaseInsensitive: element.data('verify-regexp-caseinsensitive'),
+      backdrop:          element.data('backdrop'),
+      keyboard:          element.data('keyboard'),
+      show:              element.data('show')
     };
 
-    var modal = buildModal (options);
+    var modal = buildModal(options);
 
-    modal.data('confirmed', false);
     modal.find('.commit').on('click', function () {
-      modal.data('confirmed', true);
-      element.trigger('click');
+      // Call the original event handler chain
+      element.get(0).click();
+
       modal.modal('hide');
     });
 
@@ -130,7 +169,7 @@
   var buildModal = function (options) {
     var id = 'confirm-modal-' + String(Math.random()).slice(2, -1);
     var fade = settings.fade ? 'fade' : '';
-    var modalClass = settings.modalClass ? settings.modalClass : '';
+    var modalClass = options.modalClass ? options.modalClass : settings.modalClass;
     
     var modalBodyHtml = '';
     if(options.icon) {
@@ -145,13 +184,38 @@
       modalBodyHtml = '<div class="modal-confirm"></div>'
     }
     
+    var dialogClass = options.dialogClass ? options.dialogClass : settings.dialogClass;
+    var modalCloseContent = options.modalCloseContent ? options.modalCloseContent : settings.modalCloseContent;
+    var modalClose = '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">'+modalCloseContent+'</button>'
+
+    var modalTitle = '<h5 id="'+id+'Label" class="modal-title"></h5> '
+    var modalHeader;
+
+    // Bootstrap 3 and 4 have different DOMs and different CSS. In B4, the
+    // modalHeader is display:flex and the modalClose uses negative margins,
+    // so it can stay after the modalTitle.
+    //
+    // In B3, the close button floats to the right, so it must stay before
+    // the modalTitle.
+    //
+    switch (bootstrapVersion) {
+    case 3:
+      modalHeader = modalClose + modalTitle;
+      break;
+    case 4:
+      modalHeader = modalTitle + modalClose;
+      break;
+    default:
+      modalHeader = modalTitle;
+      break;
+    }
+
     var modal = $(
-      '<div id="'+id+'" class="modal '+fade+' '+modalClass+'" tabindex="-1" role="dialog" aria-labelledby="'+id+'Label" aria-hidden="true">' +
-        '<div class="modal-dialog">' +
+      '<div id="'+id+'" class="modal '+modalClass+' '+fade+'" tabindex="-1" role="dialog" aria-labelledby="'+id+'Label" aria-hidden="true">' +
+        '<div class="modal-dialog '+dialogClass+'" role="document">' +
           '<div class="modal-content">' +
             '<div class="modal-header">' +
-              '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-              '<h4 id="'+id+'Label" class="modal-title"></h4> ' +
+              modalHeader +
             '</div>' +
             '<div class="modal-body">' +
               modalBodyHtml +
@@ -166,7 +230,8 @@
     );
 
     // Make sure it's always the top zindex
-    var highest = current = settings.zIndex;
+    var highest, current;
+    highest = current = settings.zIndex;
     $('.modal.in').not('#'+id).each(function() {
       current = parseInt($(this).css('z-index'), 10);
       if(current > highest) {
@@ -221,11 +286,11 @@
         commit.prop('disabled', !isMatch($(this).val()));
       });
 
-      modal.on('shown', function () {
-        verification.focus();
+      modal.on('shown.bs.modal', function () {
+        verification.trigger('focus');
       });
 
-      modal.on('hide', function () {
+      modal.on('hidden.bs.modal', function () {
         verification.val('').trigger('keyup');
       });
 
@@ -246,10 +311,18 @@
     focus_element = modal.find('.' + focus_element);
 
     modal.on('shown.bs.modal', function () {
-      focus_element.focus();
+      focus_element.trigger('focus');
     });
 
     $('body').append(modal);
+
+    modal.spawn = function() {
+      return modal.modal($.extend({}, {
+        backdrop: options.backdrop,
+        keyboard: options.keyboard,
+        show:     options.show
+      }));
+    };
 
     return modal;
   };
@@ -259,44 +332,64 @@
    * Returns a modal already built for the given element or builds a new one,
    * caching it into the element's `confirm-modal` data attribute.
    */
-  var getModal = function (element) {
-    var modal = element.data('confirm-modal') || buildElementModal(element);
+  $.fn.getConfirmModal = function () {
+    var element = $(this), modal = element.data('confirm-modal');
 
-    if (modal && !element.data('confirm-modal'))
+    if (!modal) {
+      modal = buildElementModal(element);
       element.data('confirm-modal', modal);
+    }
 
     return modal;
   };
 
   $.fn.confirmModal = function () {
-    getModal($(this)).modal('show');
+    var modal = $(this).getConfirmModal();
 
-    return this;
+    modal.spawn();
+
+    return modal;
   };
 
-  if ($.rails) {
+  if (window.Rails || $.rails) {
     /**
-     * Attaches to the Rails' UJS adapter 'confirm' event on links having a
-     * `data-confirm` attribute. Temporarily overrides the `$.rails.confirm`
-     * function with an anonymous one that returns the 'confirmed' status of
-     * the modal.
+     * Attaches to Rails' UJS adapter's 'confirm' event, triggered on elements
+     * having a `data-confirm` attribute set.
      *
-     * A modal is considered 'confirmed' when an user has successfully clicked
-     * the 'confirm' button in it.
+     * If the modal is not visible, then it is spawned and the default Rails
+     * confirmation dialog is canceled.
+     *
+     * If the modal is visible, it means the handler is being called by the
+     * modal commit button click handler, as such the user has successfully
+     * clicked on the confirm button. In this case Rails' confirm function
+     * is briefly overriden, and afterwards reset when the modal is closed.
+     *
      */
-    $(document).delegate(settings.elements.join(', '), 'confirm', function() {
-      var element = $(this), modal = getModal(element);
-      var confirmed = modal.data('confirmed');
+    var window_confirm = window.confirm;
 
-      if (!confirmed && !modal.is(':visible')) {
-        modal.modal('show');
+    $(document).on('confirm', settings.elements.join(', '), function() {
+      var modal = $(this).getConfirmModal();
 
-        var confirm = $.rails.confirm;
-        $.rails.confirm = function () { return modal.data('confirmed'); }
-        modal.on('hide', function () { $.rails.confirm = confirm; });
+      if (!modal.is(':visible')) {
+        modal.spawn();
+
+        // Cancel Rails' confirmation
+        return false;
+
+      } else {
+        // Modal has been confirmed. Override Rails' handler
+        window.confirm = function () {
+          return true;
+        }
+
+        modal.one('hidden.bs.modal', function() {
+          // Reset it after modal is closed.
+          window.confirm = window_confirm;
+        });
+
+        // Proceed with Rails' handlers
+        return true;
       }
-
-      return confirmed;
     });
   }
 
