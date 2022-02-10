@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="./data-confirm-modal.js"></script>
+  <title>Modal Example</title>
+</head>
+<body>
+  <div class="container h-100 mt-5">
+    <div class="row justify-content-center align-items-center">
+      <div class="col-2">
+        <div class="card">
+          <div class="card-body text-center">
+            <a id="foo" class="btn btn-primary btn-lg" href="https://www.example.com">
+              Click me
+            </a>
+          </div>
+        </div>
+        <p id="joke"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var link = $('#foo');
+    link.on('click', function(event) {
+      event.preventDefault();
+
+      dataConfirmModal.confirm({
+        title: 'Are you sure dude?',
+        text: 'This will show a popup if canceled or display funny text if confirmed',
+        commit: 'Yes do it',
+        cancel: 'Not really',
+        icon: true,
+        iconClass: 'fa-user',
+        iconColor: '#ff8400',
+
+        onConfirm: function() {
+          $.getJSON('https://api.icndb.com/jokes/random').
+            success(function(data) {
+              $('#joke').html(data.value.joke);
+            }).
+            error(function() {
+              alert("aw! Something went wrong :-(")
+            })
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
