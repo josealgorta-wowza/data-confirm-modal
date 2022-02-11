@@ -148,7 +148,7 @@
       '<div id="' + id + '" class="modal ' + fade + ' ' + modalClass + '" tabindex="-1" role="dialog" aria-labelledby="' + id + 'Label" aria-hidden="true">' +
         '<div class="modal-dialog">' +
           '<div class="modal-content rounded">' +
-            '<div class="modal-header bg-primary">' +
+            '<div class="modal-header rounded-top bg-primary">' +
               '<h4 id="' + id + 'Label" class="modal-title text-white"></h4> ' +
               '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>' +
             '</div>' +
