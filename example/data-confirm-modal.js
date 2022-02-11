@@ -147,7 +147,7 @@
     var modal = $(
       '<div id="' + id + '" class="modal ' + fade + ' ' + modalClass + '" tabindex="-1" role="dialog" aria-labelledby="' + id + 'Label" aria-hidden="true">' +
         '<div class="modal-dialog">' +
-          '<div class="modal-content">' +
+          '<div class="modal-content rounded">' +
             '<div class="modal-header bg-primary">' +
               '<h4 id="' + id + 'Label" class="modal-title text-white"></h4> ' +
               '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
@@ -156,8 +156,8 @@
               modalBodyHtml +
             '</div>' +
             '<div class="modal-footer">' +
-              '<button class="btn btn-secondary cancel" data-bs-dismiss="modal" aria-hidden="true"></button>' +
               '<button class="btn btn-danger commit"></button>' +
+              '<button class="btn btn-secondary cancel" data-bs-dismiss="modal" aria-hidden="true"></button>' +
             '</div>'+
           '</div>'+
         '</div>'+
