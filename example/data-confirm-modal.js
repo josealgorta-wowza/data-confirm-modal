@@ -44,7 +44,7 @@
     commit: 'Confirm',
     commitClass: 'btn-danger',
     cancel: 'Cancel',
-    cancelClass: 'btn-default',
+    cancelClass: 'btn-secondary',
     fade: true,
     verifyClass: '',
     elements: ['a[data-confirm]', 'button[data-confirm]', 'input[type=submit][data-confirm]'],
@@ -53,8 +53,7 @@
     iconClass: 'fa-exclamation-triangle',
     iconColor: '#000',
     zIndex: 1050,
-    modalClass: '',
-    modalHeaderClass: 'bg-primary'
+    modalClass: false
   };
 
   var settings;
@@ -132,7 +131,6 @@
     var id = 'confirm-modal-' + String(Math.random()).slice(2, -1);
     var fade = settings.fade ? 'fade' : '';
     var modalClass = settings.modalClass ? settings.modalClass : '';
-    var modalHeaderClass = settings.modalHeaderClass ? settings.modalHeaderClass : '';
     
     var modalBodyHtml = '';
     if(options.icon) {
@@ -150,15 +148,15 @@
       '<div id="' + id + '" class="modal ' + fade + ' ' + modalClass + '" tabindex="-1" role="dialog" aria-labelledby="' + id + 'Label" aria-hidden="true">' +
         '<div class="modal-dialog">' +
           '<div class="modal-content">' +
-            '<div class="modal-header ' + modalHeaderClass + '">' +
-              '<h4 id="' + id + 'Label" class="modal-title"></h4> ' +
+            '<div class="modal-header bg-primary">' +
+              '<h4 id="' + id + 'Label" class="modal-title text-white"></h4> ' +
               '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
             '</div>' +
             '<div class="modal-body mb-4">' +
               modalBodyHtml +
             '</div>' +
             '<div class="modal-footer">' +
-              '<button class="btn btn-secondary cancel" data-dismiss="modal" aria-hidden="true"></button>' +
+              '<button class="btn btn-secondary cancel" data-bs-dismiss="modal" aria-hidden="true"></button>' +
               '<button class="btn btn-danger commit"></button>' +
             '</div>'+
           '</div>'+
