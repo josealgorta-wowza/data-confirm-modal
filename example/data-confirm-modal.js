@@ -98,6 +98,7 @@
 
   var buildElementModal = function (element) {
     var options = {
+      id:           element.data('id'),
       title:        element.attr('title') || element.data('original-title'),
       text:         element.data('confirm'),
       focus:        element.data('focus'),
@@ -130,7 +131,7 @@
   }
 
   var buildModal = function (options) {
-    var id = 'confirm-modal-' + String(Math.random()).slice(2, -1);
+    var id = options.id || 'confirm-modal-' + String(Math.random()).slice(2, -1);
     var fade = settings.fade ? 'fade' : '';
     var modalClass = settings.modalClass ? settings.modalClass : '';
     var commitType = options.commitType || 'button'
