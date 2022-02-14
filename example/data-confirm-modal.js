@@ -43,6 +43,7 @@
     title: 'Are you sure?',
     commit: 'Confirm',
     commitClass: 'btn-danger',
+    commitType: 'button',
     cancel: 'Cancel',
     cancelClass: 'btn-secondary',
     fade: true,
@@ -106,6 +107,7 @@
       method:       element.data('method'),
       commit:       element.data('commit'),
       commitClass:  element.data('commit-class'),
+      commitType:   element.data('commit-type'),
       cancel:       element.data('cancel'),
       cancelClass:  element.data('cancel-class'),
       remote:       element.data('remote'),
@@ -131,6 +133,7 @@
     var id = 'confirm-modal-' + String(Math.random()).slice(2, -1);
     var fade = settings.fade ? 'fade' : '';
     var modalClass = settings.modalClass ? settings.modalClass : '';
+    var commitType = options.commitType || 'button'
     
     var modalBodyHtml = '';
     if(options.icon) {
@@ -155,7 +158,7 @@
               modalBodyHtml +
             '</div>' +
             '<div class="modal-footer">' +
-              '<button class="btn btn-danger commit"></button>' +
+              '<button type="' + commitType + '" class="btn btn-danger commit"></button>' +
               '<button class="btn btn-secondary cancel" data-bs-dismiss="modal" aria-hidden="true"></button>' +
             '</div>'+
           '</div>'+
