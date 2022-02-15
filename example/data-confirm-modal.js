@@ -120,7 +120,7 @@
       onLoad:       element.data('onload')
     };
 
-    var modal = buildModal (options);
+    var modal = buildModal (options, element);
     
     modal.on('hidden.bs.modal', function () {
       modal.remove();
@@ -137,7 +137,7 @@
     return modal;
   }
 
-  var buildModal = function (options) {
+  var buildModal = function (options, element) {
     var id = options.id || 'confirm-modal-' + String(Math.random()).slice(2, -1);
     var fade = settings.fade ? 'fade' : '';
     var modalClass = options.modalClass ? options.modalClass : '';
@@ -258,7 +258,12 @@
       focus_element.focus();
     });
 
-    $('body').append(modal);
+    
+    if (element && $(element, 'form').length == 1) {
+      element.closest('form').append(modal);
+    } else {
+      $('body').append(modal);
+    }
 
     return modal;
   };
