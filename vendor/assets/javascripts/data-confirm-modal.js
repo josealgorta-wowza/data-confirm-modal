@@ -254,10 +254,6 @@
 
     $('body').append(modal);
 
-    // Load data before showing the modal.
-    if (options.onLoad && options.onLoad.call)
-      options.onLoad.call();
-
     return modal;
   };
 
@@ -294,6 +290,11 @@
     $(document).delegate(settings.elements.join(', '), 'confirm', function() {
       var element = $(this), modal = getModal(element);
       var confirmed = modal.data('confirmed');
+      
+      // Load data before showing the modal.
+      var onLoadFunc = element.data('onload'); 
+      if (onLoadFunc && onLoadFunc.call)
+          onLoadFunc.call();
 
       if (!confirmed && !modal.is(':visible')) {
         modal.modal('show');
