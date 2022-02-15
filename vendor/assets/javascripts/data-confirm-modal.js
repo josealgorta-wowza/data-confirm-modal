@@ -54,7 +54,7 @@
     iconClass: 'fa-exclamation-triangle',
     iconColor: '#000',
     zIndex: 1050,
-    modalClass: false
+    modalClass: ''
   };
 
   var settings;
@@ -109,6 +109,7 @@
       commit:       element.data('commit'),
       commitClass:  element.data('commit-class'),
       commitType:   element.data('commit-type'),
+      modalClass:   element.data('modal-class'),
       cancel:       element.data('cancel'),
       cancelClass:  element.data('cancel-class'),
       remote:       element.data('remote'),
@@ -134,7 +135,7 @@
   var buildModal = function (options) {
     var id = options.id || 'confirm-modal-' + String(Math.random()).slice(2, -1);
     var fade = settings.fade ? 'fade' : '';
-    var modalClass = settings.modalClass ? settings.modalClass : '';
+    var modalClass = options.modalClass ? options.modalClass : '';
     var commitType = options.commitType || 'button'
     
     var modalBodyHtml = '';
@@ -257,18 +258,8 @@
     return modal;
   };
 
-
-  /**
-   * Returns a modal already built for the given element or builds a new one,
-   * caching it into the element's `confirm-modal` data attribute.
-   */
   var getModal = function (element) {
-    var modal = element.data('confirm-modal') || buildElementModal(element);
-
-    if (modal && !element.data('confirm-modal'))
-      element.data('confirm-modal', modal);
-
-    return modal;
+    return buildElementModal(element);
   };
 
   $.fn.confirmModal = function () {
