@@ -121,6 +121,11 @@
     };
 
     var modal = buildModal (options);
+    
+    modal.on('hidden.bs.modal', function () {
+      modal.remove();
+      element.removeAttr('data-confirm-modal')
+    });
 
     modal.data('confirmed', false);
     modal.find('.commit').on('click', function () {
@@ -132,7 +137,7 @@
     return modal;
   }
 
-  var buildModal = function (options) {
+  var buildModal = function (element, options) {
     var id = options.id || 'confirm-modal-' + String(Math.random()).slice(2, -1);
     var fade = settings.fade ? 'fade' : '';
     var modalClass = options.modalClass ? options.modalClass : '';
@@ -253,17 +258,18 @@
       focus_element.focus();
     });
 
-    modal.on('hidden.bs.modal', function () {
-      modal.remove();
-    });
-
     $('body').append(modal);
 
     return modal;
   };
 
   var getModal = function (element) {
-    return buildElementModal(element);
+    var modal = element.data('confirm-modal') || buildElementModal(element);
+
+    if (modal && !element.data('confirm-modal'))
+      element.data('confirm-modal', modal);
+
+    return modal;
   };
 
   $.fn.confirmModal = function () {
