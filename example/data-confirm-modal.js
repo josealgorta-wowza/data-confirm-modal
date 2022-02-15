@@ -253,6 +253,10 @@
       focus_element.focus();
     });
 
+    modal.on('hidden.bs.modal', function () {
+      modal.remove();
+    });
+
     $('body').append(modal);
 
     return modal;
