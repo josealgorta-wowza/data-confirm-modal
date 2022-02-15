@@ -42,7 +42,15 @@
         iconClass: 'fa-user',
         iconColor: '#ff8400',
         commitType: 'submit',
-        
+        id: 'custom-id',
+
+        onLoad: function() {
+          var dialog = $('#custom-id');
+
+          dialog.find('.modal-title').html("Title");
+          dialog.find('.modal-body').find('p').html("Body");  
+        },
+
         onConfirm: function() {
           $.getJSON('https://api.icndb.com/jokes/random').
             success(function(data) {

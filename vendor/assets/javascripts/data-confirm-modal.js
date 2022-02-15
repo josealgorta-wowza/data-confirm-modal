@@ -115,7 +115,8 @@
       verify:       element.data('verify'),
       verifyRegexp: element.data('verify-regexp'),
       verifyLabel:  element.data('verify-text'),
-      verifyRegexpCaseInsensitive: element.data('verify-regexp-caseinsensitive')
+      verifyRegexpCaseInsensitive: element.data('verify-regexp-caseinsensitive'),
+      onLoad:       element.data('onload')
     };
 
     var modal = buildModal (options);
@@ -252,6 +253,10 @@
     });
 
     $('body').append(modal);
+
+    // Load data before showing the modal.
+    if (options.onLoad && options.onLoad.call)
+      options.onLoad.call();
 
     return modal;
   };
