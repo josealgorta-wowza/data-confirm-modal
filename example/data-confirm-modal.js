@@ -124,7 +124,7 @@
     
     modal.on('hidden.bs.modal', function () {
       modal.remove();
-      element.removeAttr('data-confirm-modal')
+      element.removeData('confirm-modal')
     });
 
     modal.data('confirmed', false);
@@ -167,7 +167,7 @@
             '</div>' +
             '<div class="modal-footer">' +
               '<button type="' + commitType + '" class="btn btn-danger commit"></button>' +
-              '<button class="btn btn-secondary cancel" data-bs-dismiss="modal" aria-hidden="true"></button>' +
+              '<button type="button" class="btn btn-secondary cancel" data-bs-dismiss="modal" aria-hidden="true"></button>' +
             '</div>'+
           '</div>'+
         '</div>'+
