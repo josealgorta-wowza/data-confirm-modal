@@ -137,7 +137,7 @@
     return modal;
   }
 
-  var buildModal = function (element, options) {
+  var buildModal = function (options) {
     var id = options.id || 'confirm-modal-' + String(Math.random()).slice(2, -1);
     var fade = settings.fade ? 'fade' : '';
     var modalClass = options.modalClass ? options.modalClass : '';
